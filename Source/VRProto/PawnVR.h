@@ -7,6 +7,7 @@
 #include "Engine/Classes/Camera/CameraComponent.h"
 #include "PawnVR.generated.h"
 
+
 /**
  * 
  */
@@ -30,6 +31,7 @@ public: // Variables
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Components)
 		UCameraComponent* Camera_Sniper;
+
 
 protected:
 	virtual void BeginPlay() override;

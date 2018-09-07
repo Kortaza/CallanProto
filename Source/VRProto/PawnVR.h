@@ -65,7 +65,14 @@ protected: // Functions
 	virtual void ZoomChangeUp_Pressed();
 	virtual void ZoomChangeDown_Pressed();
 	void UpdateCaptureFOV();
+	void UpdateZoom(float DeltaTime);
 
 protected: // Variables
 	EZoomLevel ZoomLevel;
+	bool ZoomActive;
+	float FOV_Start;
+	float FOV_End;
+	float ZoomChangeSpeed;
+	float ZoomChangeLerp;
+	bool UpdatingZoomLevel;
 };

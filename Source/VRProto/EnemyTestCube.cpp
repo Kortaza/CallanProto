@@ -11,6 +11,7 @@ AEnemyTestCube::AEnemyTestCube(const FObjectInitializer& ObjectInitializer)
 	
 	BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BaseMesh"));
 	BaseMesh->SetStaticMesh(MeshAsset.Object);
+	BaseMesh->SetupAttachment(GetRootComponent());
 }
 
 // Called when the game starts or when spawned

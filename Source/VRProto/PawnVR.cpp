@@ -27,7 +27,7 @@ APawnVR::APawnVR(const FObjectInitializer& ObjectInitializer)
 
 	// Setup the Motion Controllers for VR
 	MotionController_Left = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("MotionController_Left"));
-	MotionController_Right->MotionSource = FXRMotionControllerBase::LeftHandSourceId;
+	MotionController_Left->MotionSource = FXRMotionControllerBase::LeftHandSourceId;
 	MotionController_Left->SetupAttachment(RootComponent);
 	MotionController_Right = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("MotionController_Right"));
 	MotionController_Right->MotionSource = FXRMotionControllerBase::RightHandSourceId;
@@ -60,6 +60,9 @@ APawnVR::APawnVR(const FObjectInitializer& ObjectInitializer)
 
 	// Setup base variables
 	ZoomLevel = EZoomLevel::ZOOM_x1;
+	ZoomActive = false;
+	ZoomChangeSpeed = 5.0f;
+	UpdatingZoomLevel = false;
 }
 
 // Called when the game starts or when spawned
@@ -74,7 +77,7 @@ void APawnVR::BeginPlay()
 void APawnVR::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	UpdateZoom(DeltaTime);
 }
 
 // Called to bind functionality to input
@@ -133,11 +136,13 @@ void APawnVR::View_Y(float value)
 void APawnVR::ActivateVisor_Pressed()
 {
 	VisorMesh_ZoomPanel->SetVisibility(true, true);
+	ZoomActive = true;
 }
 
 void APawnVR::ActivateVisor_Released()
 {
 	VisorMesh_ZoomPanel->SetVisibility(false, true);
+	ZoomActive = false;
 }
 
 void APawnVR::Fire_Pressed()
@@ -152,41 +157,66 @@ void APawnVR::Fire_Released()
 
 void APawnVR::ZoomChangeUp_Pressed()
 {
-	if (ZoomLevel < EZoomLevel::ZOOM_x16)
+	if (ZoomActive)
 	{
-		ZoomLevel = (EZoomLevel)((int)ZoomLevel + 1);
+		if (ZoomLevel < EZoomLevel::ZOOM_x16)
+		{
+			ZoomLevel = (EZoomLevel)((int)ZoomLevel + 1);
+		}
+		UpdateCaptureFOV();
 	}
-	UpdateCaptureFOV();
 }
 
 void APawnVR::ZoomChangeDown_Pressed()
 {
-	if (ZoomLevel > EZoomLevel::ZOOM_x1)
+	if (ZoomActive)
 	{
-		ZoomLevel = (EZoomLevel)((int)ZoomLevel - 1);
+		if (ZoomLevel > EZoomLevel::ZOOM_x1)
+		{
+			ZoomLevel = (EZoomLevel)((int)ZoomLevel - 1);
+		}
+		UpdateCaptureFOV();
 	}
-	UpdateCaptureFOV();
 }
 
 void APawnVR::UpdateCaptureFOV()
 {
+	UpdatingZoomLevel = true;
+	ZoomChangeLerp = 0.0f;
+	FOV_Start = VisorCapture->FOVAngle;
+
 	switch (ZoomLevel)
 	{
 	case EZoomLevel::ZOOM_x2:
-		VisorCapture->FOVAngle = 90.0f * 0.25f;
+		FOV_End = 90.0f * 0.25f;
 		break;
 	case EZoomLevel::ZOOM_x4:
-		VisorCapture->FOVAngle = 90.0f * 0.125f;
+		FOV_End = 90.0f * 0.125f;
 		break;
 	case EZoomLevel::ZOOM_x8:
-		VisorCapture->FOVAngle = 90.0f * 0.0625f;
+		FOV_End = 90.0f * 0.0625f;
 		break;
 	case EZoomLevel::ZOOM_x16:
-		VisorCapture->FOVAngle = 90.0f * 0.03125f;
+		FOV_End = 90.0f * 0.03125f;
 		break;
 	case EZoomLevel::ZOOM_x1: // Fall Through		
 	default:
-		VisorCapture->FOVAngle = 90.0f * 0.5f;
+		FOV_End = 90.0f * 0.5f;
 		break;
+	}
+}
+
+void APawnVR::UpdateZoom(float DeltaTime)
+{
+	if (UpdatingZoomLevel)
+	{
+		ZoomChangeLerp += DeltaTime * ZoomChangeSpeed;
+		ZoomChangeLerp = FMath::Clamp(ZoomChangeLerp, 0.0f, 1.0f);
+		VisorCapture->FOVAngle = FMath::Lerp(FOV_Start, FOV_End, ZoomChangeLerp);
+
+		if (ZoomChangeLerp >= 1.0f)
+		{
+			UpdatingZoomLevel = false;
+		}
 	}
 }

@@ -8,6 +8,8 @@
 #include "Engine/Classes/Components/SceneCaptureComponent2D.h"
 #include "PawnVR.generated.h"
 
+class UInputComponent;
+
 //UENUM(BlueprintType)
 enum class EZoomLevel : uint8
 {
@@ -21,7 +23,7 @@ enum class EZoomLevel : uint8
 /**
  * 
  */
-UCLASS()
+UCLASS(config = Game)
 class VRPROTO_API APawnVR : public AGamePawn
 {
 	GENERATED_BODY()
@@ -33,10 +35,14 @@ public: // Functionality
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 public: // Variables
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ViewPort")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		USceneComponent* VR_Origin;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ViewPort")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		UCameraComponent* Camera_VR;	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+		class UMotionControllerComponent* MotionController_Left;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+		class UMotionControllerComponent* MotionController_Right;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "VisorZoom")
 		UStaticMeshComponent* VisorMesh_ZoomPanel;

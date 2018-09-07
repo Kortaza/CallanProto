@@ -4,6 +4,11 @@
 #include "Runtime/CoreUObject/Public/UObject/ConstructorHelpers.h"
 #include "Engine/Classes/Engine/TextureRenderTarget2D.h"
 
+#include "HeadMountedDisplayFunctionLibrary.h"
+#include "Kismet/GameplayStatics.h"
+#include "MotionControllerComponent.h"
+#include "XRMotionControllerBase.h"
+
 // Sets default values
 APawnVR::APawnVR(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -20,6 +25,14 @@ APawnVR::APawnVR(const FObjectInitializer& ObjectInitializer)
 	Camera_VR = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera_VR"));
 	Camera_VR->SetupAttachment(VR_Origin);
 
+	// Setup the Motion Controllers for VR
+	MotionController_Left = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("MotionController_Left"));
+	MotionController_Right->MotionSource = FXRMotionControllerBase::LeftHandSourceId;
+	MotionController_Left->SetupAttachment(RootComponent);
+	MotionController_Right = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("MotionController_Right"));
+	MotionController_Right->MotionSource = FXRMotionControllerBase::RightHandSourceId;
+	MotionController_Right->SetupAttachment(RootComponent);
+	
 	// Creating and placing the Visor - Zoom Panel
 	VisorMesh_ZoomPanel = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VisorMesh_ZoomPanel"));
 	VisorMesh_ZoomPanel->SetupAttachment(Camera_VR);

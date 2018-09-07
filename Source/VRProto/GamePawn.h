@@ -12,12 +12,17 @@ class VRPROTO_API AGamePawn : public ACharacter
 	GENERATED_BODY()
 
 public:
-	AGamePawn();
+	AGamePawn(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-protected:
+protected: // Functionality
 	virtual void BeginPlay() override;
+	virtual void UpdateHealth(float delta);
+	virtual void Death();
 
+protected: // Variables
+	float MaxHealth;
+	float CurrentHealth;
 };

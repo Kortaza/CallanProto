@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "PawnVR.h"
+#include "Enemy.h"
 #include "Runtime/CoreUObject/Public/UObject/ConstructorHelpers.h"
 #include "Engine/Classes/Engine/TextureRenderTarget2D.h"
 
@@ -147,7 +148,31 @@ void APawnVR::ActivateVisor_Released()
 
 void APawnVR::Fire_Pressed()
 {
-	
+	FCollisionQueryParams RV_TraceParams = FCollisionQueryParams(FName(TEXT("RV_Trace")), true, this);
+	RV_TraceParams.bTraceComplex = true;
+	RV_TraceParams.bTraceAsyncScene = true;
+	RV_TraceParams.bReturnPhysicalMaterial = false;
+
+	//Re-initialize hit info
+	FHitResult RV_Hit(ForceInit);
+
+	FVector Start = Camera_VR->GetComponentLocation();
+	FVector End = Camera_VR->GetForwardVector() * 100000.0f + Start;
+
+	//call GetWorld() from within an actor extending class
+	GetWorld()->LineTraceSingleByChannel(
+		RV_Hit,        //result
+		Start,    //start
+		End, //end
+		ECC_Pawn, //collision channel
+		RV_TraceParams
+	);
+
+	AEnemy* target = Cast<AEnemy>(RV_Hit.Actor);
+	if (target)
+	{
+		target->UpdateHealth(-100);
+	}
 }
 
 void APawnVR::Fire_Released()

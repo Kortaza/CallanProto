@@ -17,12 +17,12 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-protected: // Functionality
+public: // Functionality
 	virtual void BeginPlay() override;
 	virtual void UpdateHealth(float delta);
 	virtual void Death();
 
-protected: // Variables
+public: // Variables
 	float MaxHealth;
 	float CurrentHealth;
 };

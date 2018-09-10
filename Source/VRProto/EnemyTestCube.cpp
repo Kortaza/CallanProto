@@ -26,5 +26,16 @@ void AEnemyTestCube::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (CurrentTarget)
+	{
+		FVector targetLoc = CurrentTarget->GetActorLocation();
+		FVector direction = (targetLoc - GetActorLocation());
+		direction.Normalize();
+		FVector movement = direction * 1000.0f * DeltaTime;
+
+		FVector newLoc = movement + GetActorLocation();
+		SetActorLocation(newLoc);
+	}
+
 }
 

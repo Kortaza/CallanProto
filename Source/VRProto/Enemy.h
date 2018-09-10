@@ -18,12 +18,16 @@ public:
 	AEnemy(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	virtual void Tick(float DeltaTime) override;
+	virtual void SetTarget(AActor* target);
+
+protected:
+	virtual void BeginPlay() override;
+	virtual void Death() override;
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mesh")
 		UStaticMeshComponent* BaseMesh;
 
 protected:
-	virtual void BeginPlay() override;
-	virtual void Death() override;
+	AActor* CurrentTarget;
 };

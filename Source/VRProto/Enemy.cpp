@@ -10,17 +10,21 @@ AEnemy::AEnemy(const FObjectInitializer& ObjectInitializer)
 	
 }
 
-// Called when the game starts or when spawned
-void AEnemy::BeginPlay()
-{
-	Super::BeginPlay();
-
-}
-
 // Called every frame
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void AEnemy::SetTarget(AActor* target)
+{
+	CurrentTarget = target;
+}
+
+// Called when the game starts or when spawned
+void AEnemy::BeginPlay()
+{
+	Super::BeginPlay();
 
 }
 

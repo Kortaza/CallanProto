@@ -51,6 +51,9 @@ public: // Variables
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "VisorZoom")
 		USceneCaptureComponent2D* VisorCapture;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audio")
+		USoundBase* AudioSniperShot;
+
 protected: // Functions
 	virtual void BeginPlay() override;
 	virtual void Movement_Forward(float value);
@@ -68,6 +71,8 @@ protected: // Functions
 	void UpdateZoom(float DeltaTime);
 
 protected: // Variables
+
+	// Zoom Variables
 	EZoomLevel ZoomLevel;
 	bool ZoomActive;
 	float FOV_Start;
@@ -75,4 +80,8 @@ protected: // Variables
 	float ZoomChangeSpeed;
 	float ZoomChangeLerp;
 	bool UpdatingZoomLevel;
+
+	//
+	float MaxRange;
+	float Damage;
 };

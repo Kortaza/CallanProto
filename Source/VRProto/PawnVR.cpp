@@ -64,6 +64,9 @@ APawnVR::APawnVR(const FObjectInitializer& ObjectInitializer)
 	ZoomActive = false;
 	ZoomChangeSpeed = 5.0f;
 	UpdatingZoomLevel = false;
+
+	MaxRange = 100000.0f;
+	Damage = -100.0f;
 }
 
 // Called when the game starts or when spawned
@@ -105,7 +108,7 @@ void APawnVR::Movement_Forward(float value)
 	if (value != 0.0f)
 	{
 		// Add movement in the direction
-		AddMovementInput(GetActorForwardVector(), value);
+		AddMovementInput(Camera_VR->GetForwardVector(), value);
 	}
 }
 
@@ -114,7 +117,7 @@ void APawnVR::Movement_Right(float value)
 	if (value != 0.0f)
 	{
 		// Add movement in the direction
-		AddMovementInput(GetActorRightVector(), value);
+		AddMovementInput(Camera_VR->GetRightVector(), value);
 	}
 }
 
@@ -148,6 +151,11 @@ void APawnVR::ActivateVisor_Released()
 
 void APawnVR::Fire_Pressed()
 {
+	if (AudioSniperShot)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, AudioSniperShot, GetActorLocation());
+	}
+
 	FCollisionQueryParams RV_TraceParams = FCollisionQueryParams(FName(TEXT("RV_Trace")), true, this);
 	RV_TraceParams.bTraceComplex = true;
 	RV_TraceParams.bTraceAsyncScene = true;
@@ -157,21 +165,21 @@ void APawnVR::Fire_Pressed()
 	FHitResult RV_Hit(ForceInit);
 
 	FVector Start = Camera_VR->GetComponentLocation();
-	FVector End = Camera_VR->GetForwardVector() * 100000.0f + Start;
+	FVector End = Camera_VR->GetForwardVector() * MaxRange + Start;
 
 	//call GetWorld() from within an actor extending class
 	GetWorld()->LineTraceSingleByChannel(
-		RV_Hit,        //result
-		Start,    //start
-		End, //end
-		ECC_Pawn, //collision channel
+		RV_Hit,				//result
+		Start,				//start
+		End,				//end
+		ECC_Pawn,			//collision channel
 		RV_TraceParams
 	);
 
 	AEnemy* target = Cast<AEnemy>(RV_Hit.Actor);
 	if (target)
 	{
-		target->UpdateHealth(-100);
+		target->UpdateHealth(Damage);
 	}
 }
 

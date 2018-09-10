@@ -38,29 +38,28 @@ APawnVR::APawnVR(const FObjectInitializer& ObjectInitializer)
 	VisorMesh_ZoomPanel = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VisorMesh_ZoomPanel"));
 	VisorMesh_ZoomPanel->SetupAttachment(Camera_VR);
 	VisorMesh_ZoomPanel->SetStaticMesh(PlaneMesh.Object);	
-	VisorMesh_ZoomPanel->SetRelativeLocation(FVector(180.0f, 0.0f, 0.0f));
-	VisorMesh_ZoomPanel->SetRelativeRotation(FRotator(0.0f, 90.0f, 90.0f));
-	VisorMesh_ZoomPanel->SetRelativeScale3D(FVector(1.7777f, 1.0f, 1.0f));
 	VisorMesh_ZoomPanel->SetVisibility(false, true);
 	
 	// Creating and placing the Visor - Obscuring Panel to create relative space that is unchanging when zoomed in
 	VisorMesh_ObscuringPanel = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VisorMesh_ObscuringPanel"));
 	VisorMesh_ObscuringPanel->SetupAttachment(VisorMesh_ZoomPanel);
 	VisorMesh_ObscuringPanel->SetStaticMesh(PlaneMesh.Object);
-	VisorMesh_ObscuringPanel->SetRelativeLocation(FVector(0.0f, 0.0f, -5.0f));
-	VisorMesh_ObscuringPanel->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
-	VisorMesh_ObscuringPanel->SetRelativeScale3D(FVector(4.0f, 4.0f, 4.0f));
 	VisorMesh_ObscuringPanel->SetVisibility(false, true);
+
+	// Creating and placing the Visor - Crosshair
+	VisorMesh_Crosshair = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VisorMesh_Crosshair"));
+	VisorMesh_Crosshair->SetupAttachment(Camera_VR);
+	VisorMesh_Crosshair->SetVisibility(false, true);
 
 	// Creating and placing the Capture component for the zoom capture
 	VisorCapture = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("Visor_Capture"));
 	VisorCapture->SetupAttachment(Camera_VR);
-	VisorCapture->SetRelativeLocation(FVector(1.0f, 0.0f, 0.0f));
 	VisorCapture->HideComponent(VisorMesh_ZoomPanel);
 	VisorCapture->HideComponent(VisorMesh_ObscuringPanel);
+	VisorCapture->HideComponent(VisorMesh_Crosshair);
 
 	// Setup base variables
-	ZoomLevel = EZoomLevel::ZOOM_x1;
+	ZoomLevel = EZoomLevel::ZOOM_x2;
 	ZoomActive = false;
 	ZoomChangeSpeed = 5.0f;
 	UpdatingZoomLevel = false;
@@ -74,7 +73,7 @@ void APawnVR::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UpdateCaptureFOV();
+	UpdateCaptureFOV(0.0f);
 }
 
 // Called every frame
@@ -140,13 +139,18 @@ void APawnVR::View_Y(float value)
 void APawnVR::ActivateVisor_Pressed()
 {
 	VisorMesh_ZoomPanel->SetVisibility(true, true);
+	VisorMesh_Crosshair->SetVisibility(true, true);
 	ZoomActive = true;
 }
 
 void APawnVR::ActivateVisor_Released()
 {
 	VisorMesh_ZoomPanel->SetVisibility(false, true);
+	VisorMesh_Crosshair->SetVisibility(false, true);
 	ZoomActive = false;
+
+	ZoomLevel = EZoomLevel::ZOOM_x2;
+	UpdateCaptureFOV(0.0f);
 }
 
 void APawnVR::Fire_Pressed()
@@ -192,11 +196,11 @@ void APawnVR::ZoomChangeUp_Pressed()
 {
 	if (ZoomActive)
 	{
-		if (ZoomLevel < EZoomLevel::ZOOM_x16)
+		if (ZoomLevel < EZoomLevel::ZOOM_x32)
 		{
 			ZoomLevel = (EZoomLevel)((int)ZoomLevel + 1);
 		}
-		UpdateCaptureFOV();
+		UpdateCaptureFOV(ZoomChangeSpeed);
 	}
 }
 
@@ -204,19 +208,22 @@ void APawnVR::ZoomChangeDown_Pressed()
 {
 	if (ZoomActive)
 	{
-		if (ZoomLevel > EZoomLevel::ZOOM_x1)
+		if (ZoomLevel > EZoomLevel::ZOOM_x2)
 		{
 			ZoomLevel = (EZoomLevel)((int)ZoomLevel - 1);
 		}
-		UpdateCaptureFOV();
+		UpdateCaptureFOV(ZoomChangeSpeed);
 	}
 }
 
-void APawnVR::UpdateCaptureFOV()
+void APawnVR::UpdateCaptureFOV(float changeTime)
 {
 	UpdatingZoomLevel = true;
 	ZoomChangeLerp = 0.0f;
+	ZoomChangeTime = changeTime;
+
 	FOV_Start = VisorCapture->FOVAngle;
+	
 
 	switch (ZoomLevel)
 	{
@@ -231,6 +238,9 @@ void APawnVR::UpdateCaptureFOV()
 		break;
 	case EZoomLevel::ZOOM_x16:
 		FOV_End = 90.0f * 0.03125f;
+		break;
+	case EZoomLevel::ZOOM_x32:
+		FOV_End = 90.0f * 0.015625;
 		break;
 	case EZoomLevel::ZOOM_x1: // Fall Through		
 	default:

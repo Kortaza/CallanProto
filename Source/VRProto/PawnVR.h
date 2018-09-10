@@ -13,11 +13,12 @@ class UInputComponent;
 //UENUM(BlueprintType)
 enum class EZoomLevel : uint8
 {
-	ZOOM_x1		UMETA(DisplayName = "Zoom x2"),
+	ZOOM_x1		UMETA(DisplayName = "Zoom x1"),
 	ZOOM_x2		UMETA(DisplayName = "Zoom x2"),
 	ZOOM_x4		UMETA(DisplayName = "Zoom x4"),
 	ZOOM_x8		UMETA(DisplayName = "Zoom x8"),
 	ZOOM_x16	UMETA(DisplayName = "Zoom x16"),
+	ZOOM_x32	UMETA(DisplayName = "Zoom x32"),
 };
 
 /**
@@ -49,6 +50,8 @@ public: // Variables
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "VisorZoom")
 		UStaticMeshComponent* VisorMesh_ObscuringPanel;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "VisorZoom")
+		UStaticMeshComponent* VisorMesh_Crosshair;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "VisorZoom")
 		USceneCaptureComponent2D* VisorCapture;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audio")
@@ -67,7 +70,7 @@ protected: // Functions
 
 	virtual void ZoomChangeUp_Pressed();
 	virtual void ZoomChangeDown_Pressed();
-	void UpdateCaptureFOV();
+	void UpdateCaptureFOV(float changeTime);
 	void UpdateZoom(float DeltaTime);
 
 protected: // Variables
@@ -78,6 +81,7 @@ protected: // Variables
 	float FOV_Start;
 	float FOV_End;
 	float ZoomChangeSpeed;
+	float ZoomChangeTime;
 	float ZoomChangeLerp;
 	bool UpdatingZoomLevel;
 

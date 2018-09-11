@@ -10,6 +10,13 @@
 #include "MotionControllerComponent.h"
 #include "XRMotionControllerBase.h"
 
+#define Zoom_x1 90.0f * 0.5f;
+#define Zoom_x2 90.0f * 0.25f;
+#define Zoom_x4 90.0f * 0.125f;
+#define Zoom_x8 90.0f * 0.0625f;
+#define Zoom_x16 90.0f * 0.03125f;
+#define Zoom_x32 90.0f * 0.015625;
+
 // Sets default values
 APawnVR::APawnVR(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -228,23 +235,23 @@ void APawnVR::UpdateCaptureFOV(float changeTime)
 	switch (ZoomLevel)
 	{
 	case EZoomLevel::ZOOM_x2:
-		FOV_End = 90.0f * 0.25f;
+		FOV_End = Zoom_x2;
 		break;
 	case EZoomLevel::ZOOM_x4:
-		FOV_End = 90.0f * 0.125f;
+		FOV_End = Zoom_x4;
 		break;
 	case EZoomLevel::ZOOM_x8:
-		FOV_End = 90.0f * 0.0625f;
+		FOV_End = Zoom_x8;
 		break;
 	case EZoomLevel::ZOOM_x16:
-		FOV_End = 90.0f * 0.03125f;
+		FOV_End = Zoom_x16;
 		break;
 	case EZoomLevel::ZOOM_x32:
-		FOV_End = 90.0f * 0.015625;
+		FOV_End = Zoom_x32;
 		break;
 	case EZoomLevel::ZOOM_x1: // Fall Through		
 	default:
-		FOV_End = 90.0f * 0.5f;
+		FOV_End = Zoom_x1;
 		break;
 	}
 }

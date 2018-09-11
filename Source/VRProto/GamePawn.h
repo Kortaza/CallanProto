@@ -7,6 +7,16 @@
 #include "GameFramework/Character.h"
 #include "GamePawn.generated.h"
 
+enum class EZoomLevel : uint8
+{
+	ZOOM_x1		UMETA(DisplayName = "Zoom x1"),
+	ZOOM_x2		UMETA(DisplayName = "Zoom x2"),
+	ZOOM_x4		UMETA(DisplayName = "Zoom x4"),
+	ZOOM_x8		UMETA(DisplayName = "Zoom x8"),
+	ZOOM_x16	UMETA(DisplayName = "Zoom x16"),
+	ZOOM_x32	UMETA(DisplayName = "Zoom x32"),
+};
+
 UCLASS()
 class VRPROTO_API AGamePawn : public ACharacter
 {

@@ -31,7 +31,7 @@ void AEnemyTestCube::Tick(float DeltaTime)
 		FVector targetLoc = CurrentTarget->GetActorLocation();
 		FVector direction = (targetLoc - GetActorLocation());
 		direction.Normalize();
-		FVector movement = direction * 1000.0f * DeltaTime;
+		FVector movement = direction * 500.0f * DeltaTime;
 
 		FVector newLoc = movement + GetActorLocation();
 		SetActorLocation(newLoc);

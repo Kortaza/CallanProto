@@ -18,6 +18,8 @@ UCLASS()
 class VRPROTO_API APawnVR_Weapons : public AGamePawn
 {
 	GENERATED_BODY()
+
+	DECLARE_DELEGATE_OneParam(FZoomDelegate, int);
 	
 public: // Functionality
 	APawnVR_Weapons(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
@@ -34,8 +36,8 @@ protected: // Functions
 	virtual void Fire_Pressed();
 	virtual void Fire_Released();
 
-	virtual void ZoomChangeUp_Pressed();
-	virtual void ZoomChangeDown_Pressed();
+	void ZoomChangeUp_Pressed(int value);
+	void ZoomChangeDown_Pressed(int value);
 
 	virtual void Reload_Pressed();
 

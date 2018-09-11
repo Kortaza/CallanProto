@@ -103,7 +103,7 @@ void ASniperRifle::Fire_Released()
 }
 
 
-void ASniperRifle::ZoomChangeUp_Pressed()
+void ASniperRifle::ZoomChangeUp_Pressed(int value)
 {
 	if (ZoomLevel < EZoom_Weapon::ZOOM_x32)
 	{
@@ -112,9 +112,9 @@ void ASniperRifle::ZoomChangeUp_Pressed()
 	UpdateCaptureFOV(ZoomChangeSpeed);
 }
 
-void ASniperRifle::ZoomChangeDown_Pressed()
+void ASniperRifle::ZoomChangeDown_Pressed(int value)
 {
-	if (ZoomLevel > EZoom_Weapon::ZOOM_x2)
+	if (ZoomLevel > EZoom_Weapon::ZOOM_x1)
 	{
 		ZoomLevel = (EZoom_Weapon)((int)ZoomLevel - 1);
 	}

@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Engine.h"
 #include "CoreMinimal.h"
 #include "GamePawn.h"
 #include "Enemy.generated.h"
@@ -26,7 +27,7 @@ protected:
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mesh")
-		UStaticMeshComponent* BaseMesh;
+		USkeletalMeshComponent* BaseMesh;
 
 protected:
 	AActor* CurrentTarget;

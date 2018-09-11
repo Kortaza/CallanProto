@@ -27,8 +27,8 @@ public:		// Functionality
 	virtual void Tick(float DeltaTime) override;
 	virtual void Fire_Pressed();
 	virtual void Fire_Released();
-	virtual void ZoomChangeUp_Pressed();
-	virtual void ZoomChangeDown_Pressed();
+	virtual void ZoomChangeUp_Pressed(int value);
+	virtual void ZoomChangeDown_Pressed(int value);
 	virtual void Reload_Pressed();
 
 protected:	// Functionality

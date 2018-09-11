@@ -83,8 +83,8 @@ void APawnVR_Weapons::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &APawnVR_Weapons::Fire_Pressed);
 	PlayerInputComponent->BindAction("Fire", IE_Released, this, &APawnVR_Weapons::Fire_Released);
-	PlayerInputComponent->BindAction("Zoom Change Up", IE_Pressed, this, &APawnVR_Weapons::ZoomChangeUp_Pressed);
-	PlayerInputComponent->BindAction("Zoom Change Down", IE_Pressed, this, &APawnVR_Weapons::ZoomChangeDown_Pressed);
+	PlayerInputComponent->BindAction<FZoomDelegate>("Zoom Change Up", IE_Pressed, this, &APawnVR_Weapons::ZoomChangeUp_Pressed, 1);
+	PlayerInputComponent->BindAction<FZoomDelegate>("Zoom Change Down", IE_Pressed, this, &APawnVR_Weapons::ZoomChangeDown_Pressed, 1);
 	PlayerInputComponent->BindAction("Reload", IE_Pressed, this, &APawnVR_Weapons::Reload_Pressed);
 }
 
@@ -133,14 +133,14 @@ void APawnVR_Weapons::Fire_Released()
 }
 
 
-void APawnVR_Weapons::ZoomChangeUp_Pressed()
+void APawnVR_Weapons::ZoomChangeUp_Pressed(int value)
 {
-	Weapon->ZoomChangeUp_Pressed();
+	Weapon->ZoomChangeUp_Pressed(value);
 }
 
-void APawnVR_Weapons::ZoomChangeDown_Pressed()
+void APawnVR_Weapons::ZoomChangeDown_Pressed(int value)
 {
-	Weapon->ZoomChangeDown_Pressed();
+	Weapon->ZoomChangeDown_Pressed(value);
 }
 
 void APawnVR_Weapons::Reload_Pressed()

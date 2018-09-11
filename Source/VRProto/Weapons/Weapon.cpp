@@ -79,12 +79,12 @@ void AWeapon::Fire_Released()
 }
 
 
-void AWeapon::ZoomChangeUp_Pressed()
+void AWeapon::ZoomChangeUp_Pressed(int value)
 {
 
 }
 
-void AWeapon::ZoomChangeDown_Pressed()
+void AWeapon::ZoomChangeDown_Pressed(int value)
 {
 
 }
